@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function rnpage_menu() {
+  $items = array();
+  $items['drupal-test-task'] = array(
+    'title'           => 'Site users (table)',
+    'page callback'   => 'rnpage_site_users_page_table',
+    'access callback' => true,
+    'type'            => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback for "drupal-test-task".
+ */
+function rnpage_site_users_page_table() {
+  $header_row = array(
+    array('data' => t('id'), 'field' => 'uid'),
+    array('data' => t('username'), 'field' => 'name'),
+    array(),
+  );
+
+  $query = db_select('users', 'u')
+    ->fields('u', array('uid', 'name'))
+    ->condition('u.uid', 0, '>');
+  $query = $query->extend('TableSort')->orderByHeader($header_row);
+  $query = $query->extend('PagerDefault')->limit(50);
+  $results = $query->execute()->fetchAll();
+
+  $rows = array();
+  foreach ($results as $result) {
+    $rows[] = array(
+      $result->uid,
+      $result->name,
+      l(t('Edit'), 'user/' . $result->uid . '/edit'),
+    );
+  }
+
+  $page_output = theme('table', array(
+    'header' => $header_row,
+    'rows'   => $rows,
+  ));
+
+  $page_output .= theme('pager', array('tags' => array()));
+
+  return $page_output;
+}

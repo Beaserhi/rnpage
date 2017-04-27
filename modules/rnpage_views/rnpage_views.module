@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Site users (views) feature.
+ */
+
+include_once 'rnpage_views.features.inc';

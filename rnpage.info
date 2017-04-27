@@ -1,0 +1,7 @@
+name = RN PAGE
+description = Drupal 7 test task
+core = 7.x
+package = Test
+version = 7.x-1.0
+
+dependencies[] = rnpage_views
